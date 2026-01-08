@@ -17,9 +17,14 @@ body {
 
 .table-wrapper {
     background: white;
-    border-radius: 8px;
+    border-radius: 6px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     overflow: hidden;
+}
+
+.controls {
+    margin-bottom: 8px; /* visually sit closely above the table */
+    padding: 0;
 }
 
 /* Desktop Table */
@@ -31,6 +36,33 @@ body {
 table {
     width: 100%;
     border-collapse: collapse;
+    /* Use fixed layout so column widths are respected and Distribution can be wider */
+    table-layout: fixed;
+}
+
+/* Column width allocation (Distribution gets more space for clearer comparison) */
+th:nth-child(1), td:nth-child(1) {
+    width: 40%;
+}
+th:nth-child(2), td:nth-child(2) {
+    width: 15%;
+}
+th:nth-child(3), td:nth-child(3) {
+    width: 15%;
+}
+th-child(4), td:nth-child(4) {
+    width: 30%;
+    min-width: 200px;
+}
+
+/* Ensure the bar itself has room to render */
+.bar-container {
+    width: 100%;
+    min-width: 120px;
+    background-color: #e5e7eb;
+    border-radius: 4px;
+    height: 24px;
+    overflow: hidden;
 }
 
 thead {
@@ -219,7 +251,8 @@ td.child-cell {
 }
 
 .controls {
-    padding: 16px;
+    padding: 0;
+    margin-bottom: 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -276,7 +309,7 @@ td.child-cell {
     outline-offset: 2px;
 }
 
-        .hidden {
+.hidden {
     display: none;
 }
 
@@ -285,8 +318,48 @@ td.child-cell {
         display: none;
     }
 
+    /* Make the wrapper visually neutral so mobile cards look like separate surfaces */
+    .table-wrapper {
+        background: transparent;
+        box-shadow: none;
+        border-radius: 0;
+        padding: 0;
+    }
+
     .mobile-cards {
         display: flex;
         flex-direction: column;
+        padding: 12px 0; /* spacing around cards but no white surface */
+        gap: 12px;
+    }
+
+    /* Each card becomes its own white surface with spacing */
+    .card {
+        background: white;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .card + .card {
+        margin-top: 12px;
+    }
+
+    .card-body {
+        padding: 12px;
+    }
+
+    /* Total card stays visually distinct */
+    .card.total-card {
+        background-color: #f3f4f6;
+        border: 2px solid #9ca3af;
+    }
+
+    .card-header {
+        background-color: #0f766e;
+        color: white;
+        padding: 12px;
+        border-radius: 8px 8px 0 0;
     }
 }
