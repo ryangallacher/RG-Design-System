@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CO2 Emissions Table</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .table-wrapper {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        /* Desktop Table */
+        .desktop-table {
+            display: block;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #0f766e;
+            color: white;
+        }
+
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        th.text-right {
+            text-align: right;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #d1d5db;
+            transition: background-color 0.2s;
+        }
+
+        tbody tr:hover {
+            background-color: #f9fafb;
+        }
+
+        tbody tr.parent-row {
+            cursor: pointer;
+        }
+
+        tbody tr.child-row {
+            background-color: #f9fafb;
+        }
+
+        tbody tr.child-row:hover {
+            background-color: #f3f4f6;
+        }
+
+        tbody tr.total-row {
+            background-color: #f3f4f6;
+            font-weight: bold;
+            border-top: 2px solid #9ca3af;
+        }
+
+        td {
+            padding: 12px 16px;
+        }
+
+        td.text-right {
+            text-align: right;
+        }
+
+        td.child-cell {
+            padding-left: 48px;
+            font-size: 0.875rem;
+        }
+
+        .category-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chevron {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            transition: transform 0.2s;
+        }
+
+        .chevron.expanded {
+            transform: rotate(90deg);
+        }
+
+        .bar-container {
+            width: 100%;
+            background-color: #e5e7eb;
+            border-radius: 4px;
+            height: 24px;
+            overflow: hidden;
+        }
+
+        .bar {
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .bar-teal { background-color: #0d9488; }
+        .bar-red { background-color: #b91c1c; }
+        .bar-orange { background-color: #c2410c; }
+        .bar-gray { background-color: #4b5563; }
+
+        /* Mobile Cards */
+        .mobile-cards {
+            display: none;
+            padding: 16px;
+            gap: 12px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: #0f766e;
+            color: white;
+            padding: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-header h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .card-body {
+            padding: 16px;
+        }
+
+        .card-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .card-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .card-value {
+            font-weight: 600;
+        }
+
+        .card-chart-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .card-children {
+            border-top: 1px solid #e5e7eb;
+            background-color: #f9fafb;
+        }
+
+        .card-child {
+            padding: 16px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .card-child:last-child {
+            border-bottom: none;
+        }
+
+        .card-child-name {
+            font-weight: 500;
+            font-size: 0.875rem;
+            margin-bottom: 8px;
+        }
+
+        .card.total-card {
+            background-color: #f3f4f6;
+            border: 2px solid #9ca3af;
+        }
+
+        .card.total-card .card-header {
+            background-color: #6b7280;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 767px) {
+            .desktop-table {
+                display: none;
+            }
+
+            .mobile-cards {
+                display: flex;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="table-wrapper">
+            <!-- Desktop Table -->
+            <div class="desktop-table">
+                <table role="table" aria-label="CO2 Emissions Estimates">
+                    <thead>
+                        <tr>
+                            <th>Emissions Category</th>
+                            <th class="text-right">Estimated CO<sub>2</sub>E</th>
+                            <th class="text-right">% of Total</th>
+                            <th>Distribution</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <!-- Content will be generated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Mobile Cards -->
+            <div class="mobile-cards" id="mobile-cards">
+                <!-- Content will be generated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const data = {
+            upstream: {
+                title: 'Upstream Emissions Estimate',
+                total: 1553,
+                percentage: 34,
+                color: 'bar-teal',
+                children: [
+                    { name: 'Employee Hardware', amount: 1142, percentage: 25 },
+                    { name: 'Upstream Emissions Estimate', amount: 302, percentage: 7 },
+                    { name: 'Networking and Infrastructure Hardware', amount: 108, percentage: 2 }
+                ]
+            },
+            direct: {
+                title: 'Direct Emissions Estimate',
+                total: 2981,
+                percentage: 65,
+                color: 'bar-red',
+                children: [
+                    { name: 'Employee Devices', amount: 540, percentage: 12 },
+                    { name: 'Servers and Storage', amount: 2182, percentage: 47 },
+                    { name: 'Networking and Infrastructure', amount: 258, percentage: 47 }
+                ]
+            },
+            indirect: {
+                title: 'Indirect Emissions Estimate',
+                total: 68,
+                percentage: 1,
+                color: 'bar-orange',
+                children: [
+                    { name: 'Cloud Services', amount: 52, percentage: 1 },
+                    { name: 'SaaS', amount: 16, percentage: '<1' }
+                ]
+            },
+            downstream: {
+                title: 'Downstream Emissions Estimate',
+                total: 17,
+                percentage: '<1',
+                color: 'bar-gray',
+                children: [
+                    { name: 'Customer Devices', amount: 7, percentage: '<1' },
+                    { name: 'Network Data Transfer', amount: 11, percentage: '<1' }
+                ]
+            }
+        };
+
+        const expandedRows = {
+            upstream: true,
+            direct: false,
+            indirect: false,
+            downstream: false
+        };
+
+        function createBar(percentage, color) {
+            const width = typeof percentage === 'number' ? percentage : 1;
+            return `
+                <div class="bar-container">
+                    <div class="bar ${color}" style="width: ${width}%"></div>
+                </div>
+            `;
+        }
+
+        function toggleRow(key) {
+            expandedRows[key] = !expandedRows[key];
+            renderTable();
+            renderMobileCards();
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('table-body');
+            let html = '';
+
+            Object.entries(data).forEach(([key, value]) => {
+                const isExpanded = expandedRows[key];
+                const chevronClass = isExpanded ? 'chevron expanded' : 'chevron';
+                
+                html += `
+                    <tr class="parent-row" onclick="toggleRow('${key}')">
+                        <td>
+                            <div class="category-name">
+                                <svg class="${chevronClass}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
+                                <span style="font-weight: 600">${value.title}</span>
+                            </div>
+                        </td>
+                        <td class="text-right">${value.total} kg</td>
+                        <td class="text-right">${value.percentage}%</td>
+                        <td>${createBar(value.percentage, value.color)}</td>
+                    </tr>
+                `;
+
+                if (isExpanded) {
+                    value.children.forEach(child => {
+                        html += `
+                            <tr class="child-row">
+                                <td class="child-cell">${child.name}</td>
+                                <td class="text-right" style="font-size: 0.875rem">${child.amount} kg</td>
+                                <td class="text-right" style="font-size: 0.875rem">${child.percentage}%</td>
+                                <td>${createBar(typeof child.percentage === 'number' ? child.percentage : 1, value.color)}</td>
+                            </tr>
+                        `;
+                    });
+                }
+            });
+
+            html += `
+                <tr class="total-row">
+                    <td>Total Emissions Estimate</td>
+                    <td class="text-right">4619 kg</td>
+                    <td class="text-right">100%</td>
+                    <td>${createBar(100, 'bar-gray')}</td>
+                </tr>
+            `;
+
+            tbody.innerHTML = html;
+        }
+
+        function renderMobileCards() {
+            const container = document.getElementById('mobile-cards');
+            let html = '';
+
+            Object.entries(data).forEach(([key, value]) => {
+                const isExpanded = expandedRows[key];
+                const chevronClass = isExpanded ? 'chevron expanded' : 'chevron';
+
+                html += `
+                    <div class="card">
+                        <div class="card-header" onclick="toggleRow('${key}')">
+                            <svg class="${chevronClass}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                            <h3>${value.title}</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-row">
+                                <span class="card-label">Estimated CO<sub>2</sub>E:</span>
+                                <span class="card-value">${value.total} kg</span>
+                            </div>
+                            <div class="card-row">
+                                <span class="card-label">% of Total:</span>
+                                <span class="card-value">${value.percentage}%</span>
+                            </div>
+                            <div>
+                                <span class="card-chart-label">Distribution:</span>
+                                ${createBar(value.percentage, value.color)}
+                            </div>
+                        </div>
+                        ${isExpanded && value.children.length > 0 ? `
+                            <div class="card-children">
+                                ${value.children.map(child => `
+                                    <div class="card-child">
+                                        <div class="card-child-name">${child.name}</div>
+                                        <div class="card-row">
+                                            <span class="card-label">Amount:</span>
+                                            <span class="card-value">${child.amount} kg</span>
+                                        </div>
+                                        <div class="card-row">
+                                            <span class="card-label">Percentage:</span>
+                                            <span class="card-value">${child.percentage}%</span>
+                                        </div>
+                                        <div>
+                                            ${createBar(typeof child.percentage === 'number' ? child.percentage : 1, value.color)}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+
+            html += `
+                <div class="card total-card">
+                    <div class="card-header">
+                        <h3>Total Emissions Estimate</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-row">
+                            <span class="card-label">Total CO<sub>2</sub>E:</span>
+                            <span class="card-value">4619 kg</span>
+                        </div>
+                        <div class="card-row">
+                            <span class="card-label">Percentage:</span>
+                            <span class="card-value">100%</span>
+                        </div>
+                        <div>
+                            ${createBar(100, 'bar-gray')}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        // Initial render
+        renderTable();
+        renderMobileCards();
+    </script>
+</body>
+</html>
