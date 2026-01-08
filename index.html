@@ -4,238 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CO2 Emissions Table</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background-color: #f5f5f5;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .table-wrapper {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-
-        /* Desktop Table */
-        .desktop-table {
-            display: block;
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        thead {
-            background-color: #0f766e;
-            color: white;
-        }
-
-        th {
-            padding: 12px 16px;
-            text-align: left;
-            font-weight: 600;
-        }
-
-        th.text-right {
-            text-align: right;
-        }
-
-        tbody tr {
-            border-bottom: 1px solid #d1d5db;
-            transition: background-color 0.2s;
-        }
-
-        tbody tr:hover {
-            background-color: #f9fafb;
-        }
-
-        tbody tr.parent-row {
-            cursor: pointer;
-        }
-
-        tbody tr.child-row {
-            background-color: #f9fafb;
-        }
-
-        tbody tr.child-row:hover {
-            background-color: #f3f4f6;
-        }
-
-        tbody tr.total-row {
-            background-color: #f3f4f6;
-            font-weight: bold;
-            border-top: 2px solid #9ca3af;
-        }
-
-        td {
-            padding: 12px 16px;
-        }
-
-        td.text-right {
-            text-align: right;
-        }
-
-        td.child-cell {
-            padding-left: 48px;
-            font-size: 0.875rem;
-        }
-
-        .category-name {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .chevron {
-            width: 16px;
-            height: 16px;
-            flex-shrink: 0;
-            transition: transform 0.2s;
-        }
-
-        .chevron.expanded {
-            transform: rotate(90deg);
-        }
-
-        .bar-container {
-            width: 100%;
-            background-color: #e5e7eb;
-            border-radius: 4px;
-            height: 24px;
-            overflow: hidden;
-        }
-
-        .bar {
-            height: 100%;
-            transition: width 0.3s ease;
-        }
-
-        .bar-teal { background-color: #0d9488; }
-        .bar-red { background-color: #b91c1c; }
-        .bar-orange { background-color: #c2410c; }
-        .bar-gray { background-color: #4b5563; }
-
-        /* Mobile Cards */
-        .mobile-cards {
-            display: none;
-            padding: 16px;
-            gap: 12px;
-        }
-
-        .card {
-            background: white;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-
-        .card-header {
-            background-color: #0f766e;
-            color: white;
-            padding: 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .card-header h3 {
-            font-size: 0.875rem;
-            font-weight: 600;
-            flex: 1;
-        }
-
-        .card-body {
-            padding: 16px;
-        }
-
-        .card-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .card-label {
-            font-size: 0.875rem;
-            color: #6b7280;
-        }
-
-        .card-value {
-            font-weight: 600;
-        }
-
-        .card-chart-label {
-            font-size: 0.75rem;
-            color: #6b7280;
-            margin-bottom: 4px;
-            display: block;
-        }
-
-        .card-children {
-            border-top: 1px solid #e5e7eb;
-            background-color: #f9fafb;
-        }
-
-        .card-child {
-            padding: 16px;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        .card-child:last-child {
-            border-bottom: none;
-        }
-
-        .card-child-name {
-            font-weight: 500;
-            font-size: 0.875rem;
-            margin-bottom: 8px;
-        }
-
-        .card.total-card {
-            background-color: #f3f4f6;
-            border: 2px solid #9ca3af;
-        }
-
-        .card.total-card .card-header {
-            background-color: #6b7280;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        @media (max-width: 767px) {
-            .desktop-table {
-                display: none;
-            }
-
-            .mobile-cards {
-                display: flex;
-                flex-direction: column;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <div class="table-wrapper">
+            <div class="controls">
+                <button id="toggle-all-btn" class="toggle-all-btn" type="button" aria-expanded="true" onclick="toggleAllRows()">Collapse all</button>
+                <div class="segmented" role="tablist" aria-label="Period">
+                    <button class="segmented-item" data-value="annual" aria-pressed="true" onclick="setPeriod('annual')">Annual</button>
+                    <button class="segmented-item" data-value="monthly" aria-pressed="false" onclick="setPeriod('monthly')">Monthly</button>
+                </div>
+            </div>
             <!-- Desktop Table -->
             <div class="desktop-table">
                 <table role="table" aria-label="CO2 Emissions Estimates">
@@ -281,7 +61,7 @@
                 children: [
                     { name: 'Employee Devices', amount: 540, percentage: 12 },
                     { name: 'Servers and Storage', amount: 2182, percentage: 47 },
-                    { name: 'Networking and Infrastructure', amount: 258, percentage: 47 }
+                    { name: 'Networking and Infrastructure', amount: 258, percentage: 6 }
                 ]
             },
             indirect: {
@@ -306,12 +86,7 @@
             }
         };
 
-        const expandedRows = {
-            upstream: true,
-            direct: false,
-            indirect: false,
-            downstream: false
-        };
+        const expandedRows = Object.keys(data).reduce((acc, key) => { acc[key] = true; return acc; }, {});
 
         function createBar(percentage, color) {
             const width = typeof percentage === 'number' ? percentage : 1;
@@ -326,6 +101,32 @@
             expandedRows[key] = !expandedRows[key];
             renderTable();
             renderMobileCards();
+        }
+
+        function toggleAllRows() {
+            const allExpanded = Object.values(expandedRows).every(Boolean);
+            Object.keys(expandedRows).forEach(k => expandedRows[k] = !allExpanded);
+            renderTable();
+            renderMobileCards();
+        }
+
+        function updateToggleAllButton() {
+            const btn = document.getElementById('toggle-all-btn');
+            if (!btn) return;
+            const allExpanded = Object.values(expandedRows).every(Boolean);
+            btn.textContent = allExpanded ? 'Collapse all' : 'Expand all';
+            btn.setAttribute('aria-expanded', String(allExpanded));
+        }
+
+        // Period segmented control (Annual / Monthly)
+        let selectedPeriod = 'annual';
+        function setPeriod(value) {
+            selectedPeriod = value;
+            document.querySelectorAll('.segmented .segmented-item').forEach(btn => {
+                const isActive = btn.getAttribute('data-value') === value;
+                btn.setAttribute('aria-pressed', String(isActive));
+            });
+            // Future: use `selectedPeriod` to adjust data rendering (e.g., monthly breakdown)
         }
 
         function renderTable() {
@@ -343,7 +144,7 @@
                                 <svg class="${chevronClass}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <polyline points="9 18 15 12 9 6"></polyline>
                                 </svg>
-                                <span style="font-weight: 600">${value.title}</span>
+                                <span class="category-title">${value.title}</span>
                             </div>
                         </td>
                         <td class="text-right">${value.total} kg</td>
@@ -357,8 +158,8 @@
                         html += `
                             <tr class="child-row">
                                 <td class="child-cell">${child.name}</td>
-                                <td class="text-right" style="font-size: 0.875rem">${child.amount} kg</td>
-                                <td class="text-right" style="font-size: 0.875rem">${child.percentage}%</td>
+                                <td class="text-right small">${child.amount} kg</td>
+                                <td class="text-right small">${child.percentage}%</td>
                                 <td>${createBar(typeof child.percentage === 'number' ? child.percentage : 1, value.color)}</td>
                             </tr>
                         `;
@@ -376,6 +177,7 @@
             `;
 
             tbody.innerHTML = html;
+            updateToggleAllButton();
         }
 
         function renderMobileCards() {
@@ -454,11 +256,13 @@
             `;
 
             container.innerHTML = html;
+            updateToggleAllButton();
         }
 
         // Initial render
         renderTable();
         renderMobileCards();
+        setPeriod(selectedPeriod);
     </script>
 </body>
 </html>
