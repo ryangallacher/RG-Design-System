@@ -11,8 +11,105 @@ body {
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 1400px; /* widened for larger form layouts */
     margin: 0 auto;
+}
+
+/* Layout: left sidebar for parameters + main content for controls + table */
+.layout {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+.sidebar {
+    width: 560px; /* widened for sliders and richer controls */
+    min-width: 420px;
+}
+
+.params-placeholder {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 32px; /* larger padding for roomy controls */
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
+.params-placeholder h2 {
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+}
+
+.params-placeholder .muted {
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin-bottom: 12px;
+}
+
+/* Larger placeholder area using a single-column grid with roomy slots */
+.placeholder-area {
+    padding: 16px;
+    display: grid;
+    gap: 16px; /* GOV.UK spacing inspiration */
+    grid-template-columns: 1fr;
+    background: linear-gradient(90deg, #f8fafc, #eef2f6);
+    border-radius: 8px;
+    border: 1px dashed #e5e7eb;
+    min-height: 520px; /* increased to allow vertical controls like sliders */
+}
+
+.control-slot {
+    height: 56px; /* typical input height per GOV.UK guidance */
+    background: linear-gradient(90deg, #ffffff, #f8fafc);
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+}
+
+.control-slot.long {
+    height: 92px; /* wider slot for range/sliders */
+}
+
+.control-slot.medium {
+    height: 64px;
+    width: 70%;
+}
+
+.control-slot.full {
+    width: 100%;
+}
+
+.placeholder-area:hover {
+    background: linear-gradient(90deg, #f6f8fa, #eef2f6);
+}
+
+/* Keep styling minimal — actual controls will be full width when added */
+
+
+/* Main content should expand */
+.main {
+    flex: 1 1 auto;
+}
+
+/* Responsive: stack on small screens */
+@media (max-width: 900px) {
+    .layout {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        min-width: auto;
+    }
+
+    .params-placeholder {
+        border-radius: 8px;
+        padding: 20px;
+    }
+
+    .placeholder-area {
+        min-height: 320px; /* compact on mobile */
+    }
 }
 
 .table-wrapper {
